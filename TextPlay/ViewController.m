@@ -8,7 +8,12 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
+@interface ViewController () <UITextFieldDelegate>
+@property (nonatomic, strong) IBOutlet UILabel * leftLabel;
+@property (nonatomic, strong) IBOutlet UILabel * rightLabel;
+@property (nonatomic, strong) NSString * newlabelTextFromTextField;
+
+- (IBAction)updateLabel:(UIButton *)sender;
 
 @end
 
@@ -16,14 +21,45 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    self.leftLabel.adjustsFontSizeToFitWidth = true;
+    self.rightLabel.adjustsFontSizeToFitWidth = true;
+    self.newlabelTextFromTextField = @"";
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)updateLabel:(UIButton *)sender {
+    UILabel * label = nil;
+    
+    if ([sender.currentTitle isEqualToString: @"Reset"]) {
+        self.leftLabel.text = @"";
+        self.rightLabel.text = @"";
+        self.newlabelTextFromTextField = @"";
+    } else {
+        if ([sender.currentTitle isEqualToString:@"To left label"]) {
+            label = self.leftLabel;
+        } else if ([sender.currentTitle isEqualToString:@"To right label"]) {
+            label = self.rightLabel;
+        }
+        
+        [label setText:self.newlabelTextFromTextField];
+    }
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField reason:(UITextFieldDidEndEditingReason)reason {
+    self.newlabelTextFromTextField = textField.text;
+}
 
 @end
